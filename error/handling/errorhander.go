@@ -41,7 +41,7 @@ func main() {
 		}
 		line, err = ReadFile(filename)
 		if err != nil {
-			fmt.Println("파일 생성 실패", err)
+			fmt.Println("파일 읽기 실패", err)
 			return
 		}
 	}
