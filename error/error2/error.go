@@ -35,7 +35,7 @@ func readNextInt(scanner *bufio.Scanner) (int, int, error) {
 		return 0, 0, fmt.Errorf("Failed to scan")
 	}
 	word := scanner.Text()
-	number, err := strconv.Atoi(word)
+	number, err := strconv.Atoi(word) //"24" -> 24 , "abc"-> error
 	if err != nil {
 		return 0, 0, fmt.Errorf("Failed to convert word to int word:%s err:%w", word, err)
 	}
@@ -50,7 +50,7 @@ func readEq(eq string) {
 	} else {
 		fmt.Println(err)
 		var numError *strconv.NumError
-		if errors.As(err, &numError) {
+		if errors.As(err, &numError) { //error를 numError로 감싸서 넘기는 방법
 			fmt.Println("NumberError", numError)
 		}
 	}
