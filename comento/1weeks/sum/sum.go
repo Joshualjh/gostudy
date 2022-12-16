@@ -13,7 +13,7 @@ func main() {
 	start := time.Now() //time start
 	var sum int64
 
-	n := 5    //goroutine의 갯수
+	n := 8    //goroutine의 갯수
 	wg.Add(n) //sync 갯수
 	for i := 0; i < 10000000000; i += 10000000000 / n {
 		go sumation(i, i+10000000000/n, &sum)

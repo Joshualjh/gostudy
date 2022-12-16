@@ -18,55 +18,58 @@ type ExchangeRate struct {
 var wg sync.WaitGroup
 
 func getData(c chan *ExchangeRate) error {
-	defer wg.Done()
 	resp, err := http.Get("https://api.frankfurter.app/latest?from=KRW")
 	if err != nil {
 		return err
 	}
 
-	defer resp.Body.Close()
-
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}
-
 	resJson := ExchangeRate{}
 	if err := json.Unmarshal(data, &resJson); err != nil {
 		return err
 	}
 
 	c <- &resJson
-
+	resp.Body.Close()
+	wg.Done()
 	return nil
 }
 
 func result(c chan *ExchangeRate) error {
 	var data float64
+	// for i := range c {
+	// 	data += i.Rates["USD"]
+	// 	println(data)
+	// }
+
 	for {
 		if i, success := <-c; success {
-			println(i)
+			data += i.Rates["USD"]
+			fmt.Println(data)
 		} else {
 			break
 		}
 	}
+	fmt.Println(data / 10)
 
-	fmt.Println(data)
 	return nil
 }
 
 func main() {
-	c := make(chan *ExchangeRate)
-	n := 5
+	c := make(chan *ExchangeRate, 10)
+	n := 10
 	for i := 0; i < n; i++ {
 		wg.Add(1)
 		go getData(c)
 		fmt.Println(i, "출력")
 	}
-
-	result(c)
-	close(c)
 	wg.Wait()
+	close(c)
+	result(c)
+
 	// var data float32
 	// for i, success := <-c; !success; {
 	// 	data += float32(i.Rates["USD"])
