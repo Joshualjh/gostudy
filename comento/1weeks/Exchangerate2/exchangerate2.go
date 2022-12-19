@@ -38,8 +38,12 @@ func getData(c chan *ExchangeRate, n int) error {
 
 		c <- &resJson //채널에 저장
 		resp.Body.Close()
+		//fmt.Println(resJson.Rates["USD"])
 	}
+
 	wg.Done()
+	close(c)
+
 	return nil
 }
 
@@ -59,7 +63,7 @@ func result(c chan *ExchangeRate, n int) error {
 	// 	}
 	// }
 	fmt.Println(data / float64(n))
-
+	wg.Done()
 	return nil
 }
 
@@ -68,13 +72,13 @@ func main() {
 	n := 10
 	c := make(chan *ExchangeRate, n)
 
-	wg.Add(1)
+	wg.Add(2)
 	go getData(c, n)
 	//fmt.Println(i, "출력")
-
-	wg.Wait() // 모든 고루틴이 끝날때까지 기다림
-	close(c)  // 채널닫기
-	result(c, n)
+	// 모든 고루틴이 끝날때까지 기다림
+	// 채널닫기
+	go result(c, n)
+	wg.Wait()
 	end := time.Since(start)
 	fmt.Println(end)
 	// var data float64
