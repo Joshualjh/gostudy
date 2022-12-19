@@ -41,7 +41,7 @@ func getData(c chan *ExchangeRate) error {
 	return nil
 }
 
-func result(c chan *ExchangeRate) error {
+func result(c chan *ExchangeRate, n int) error {
 	var data float64
 	for i := range c {
 		data += i.Rates["USD"]
@@ -56,15 +56,16 @@ func result(c chan *ExchangeRate) error {
 	// 		break
 	// 	}
 	// }
-	fmt.Println(data / 10)
+	fmt.Println(data / float64(n))
 
 	return nil
 }
 
 func main() {
 	start := time.Now()
-	c := make(chan *ExchangeRate, 10)
 	n := 10
+	c := make(chan *ExchangeRate, n)
+
 	for i := 0; i < n; i++ {
 		wg.Add(1)
 		go getData(c)
@@ -72,12 +73,12 @@ func main() {
 	}
 	wg.Wait() // 모든 고루틴이 끝날때까지 기다림
 	close(c)  // 채널닫기
-	result(c)
+	result(c, n)
 	end := time.Since(start)
 	fmt.Println(end)
-	// var data float32
+	// var data float64
 	// for i, success := <-c; !success; {
-	// 	data += float32(i.Rates["USD"])
+	// 	data += float64(i.Rates["USD"])
 	// 	fmt.Println(i)
 	// }
 
