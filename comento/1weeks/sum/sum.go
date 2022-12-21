@@ -7,13 +7,13 @@ import (
 )
 
 var wg sync.WaitGroup // 다른 func에도 사용할 수 있도록 전역 변수 설정
-var mu sync.Mutex     // 다른 func에도 사용할 수 있도록 전역 변수 설정
+//var mu sync.Mutex     // 다른 func에도 사용할 수 있도록 전역 변수 설정
 
 func main() {
 	start := time.Now() //time start
 	var sum int64
 
-	n := 8    //goroutine의 갯수
+	n := 30   //goroutine의 갯수
 	wg.Add(n) //sync 갯수
 	for i := 0; i < 10000000000; i += 10000000000 / n {
 		go sumation(i, i+10000000000/n, &sum)
@@ -28,8 +28,8 @@ func sumation(start, end int, sumTotal *int64) {
 	for ; start < end; start++ {
 		sum += int64(start)
 	}
-	mu.Lock() //다른 고루틴이 변수에 접근하지 못하도록 Lock을 걸어둠
+	//mu.Lock() //다른 고루틴이 변수에 접근하지 못하도록 Lock을 걸어둠
 	*sumTotal += sum
-	mu.Unlock() //작업이후 Lock 해제
-	wg.Done()   //한개의 고루틴이 끝나면 Done
+	//mu.Unlock() //작업이후 Lock 해제
+	wg.Done() //한개의 고루틴이 끝나면 Done
 }

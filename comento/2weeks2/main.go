@@ -39,8 +39,8 @@ func main() {
 		if err := c.ShouldBind(&person); err != nil {
 			fmt.Println("Bind Err")
 		}
-
 		c.JSON(200, person)
+
 	})
 
 	r.Run()
