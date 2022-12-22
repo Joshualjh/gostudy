@@ -47,5 +47,14 @@ func ReadImage(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, Response{Res: "resquest is not valid"})
 		return
 	}
+
 	c.File("images/" + reqURI.ImageId)
+}
+
+func DeleteImage(c *gin.Context) {
+
+}
+
+func UpdateImage(c *gin.Context) {
+
 }
