@@ -1,11 +1,10 @@
 package api
 
 import (
+	"bytes"
 	"encoding/base64"
 	"fmt"
-	"main/internal/global"
 	"net/http"
-	"strconv"
 
 	"strings"
 
@@ -40,10 +39,17 @@ func Createimage(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, Response{Res: "file is not valid1"})
 		return
 	}
-	fmt.Println(req.File)
-	if err := c.SaveUploadedFile(data, "images/"+strconv.FormatInt(global.MaxImageNumber, 10)); err != nil {
-		fmt.Println(err)
+
+	file, errfile := c.FormFile(bytes.NewBuffer(data).String())
+	if errfile != nil {
+		fmt.Println(errfile)
 		c.JSON(http.StatusBadRequest, Response{Res: "file is not valid2"})
+		return
+	}
+
+	if err := c.SaveUploadedFile((file), "images/"+req.No); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusBadRequest, Response{Res: "file is not valid3"})
 		return
 	}
 
