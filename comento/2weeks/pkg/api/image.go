@@ -1,21 +1,25 @@
 package api
 
 import (
+	"encoding/base64"
 	"fmt"
 	"main/internal/global"
-	"mime/multipart"
 	"net/http"
 	"strconv"
+
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
 type RequestURI struct {
-	ImageId string `uri:"id"`
+	ImageId string `image:"base64"`
+	No      string `json:"no"`
 }
 
 type RequestFile struct {
-	File *multipart.FileHeader `form:"file"`
+	File string `json:"image"`
+	No   string `json:"no"`
 }
 
 type Response struct {
@@ -24,18 +28,26 @@ type Response struct {
 
 func Createimage(c *gin.Context) {
 	req := RequestFile{}
-	if err := c.ShouldBind(&req); err != nil {
+
+	if err := c.ShouldBindJSON(&req); err != nil {
 		fmt.Println(err)
-		c.JSON(http.StatusBadRequest, Response{Res: "file is not valid"})
+		c.JSON(http.StatusBadRequest, Response{Res: "file is not valid1"})
+		return
+	}
+	data, errBase := base64.RawStdEncoding.DecodeString(strings.Split(req.File, "base64,")[1])
+	if errBase != nil {
+		fmt.Println(errBase)
+		c.JSON(http.StatusBadRequest, Response{Res: "file is not valid1"})
+		return
+	}
+	fmt.Println(req.File)
+	if err := c.SaveUploadedFile(data, "images/"+strconv.FormatInt(global.MaxImageNumber, 10)); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusBadRequest, Response{Res: "file is not valid2"})
 		return
 	}
 
-	if err := c.SaveUploadedFile(req.File, "images/"+strconv.FormatInt(global.MaxImageNumber, 10)); err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusBadRequest, Response{Res: "file is not valid"})
-		return
-	}
-	global.MaxImageNumber++
+	// global.MaxImageNumber++
 	c.JSON(http.StatusOK, Response{Res: "success"})
 
 }
