@@ -1,24 +1,24 @@
 package api
 
 import (
-	"bytes"
 	"encoding/base64"
 	"fmt"
+	"io/ioutil"
 	"net/http"
-
+	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
 type RequestURI struct {
-	ImageId string `image:"base64"`
-	No      string `json:"no"`
+	ImageId string `uri:"id"`
 }
 
 type RequestFile struct {
-	File string `json:"image"`
-	No   string `json:"no"`
+	File    string `json:"image"`
+	No      string `json:"no"`
+	ImageId string `uri:"id"`
 }
 
 type Response struct {
@@ -36,24 +36,14 @@ func Createimage(c *gin.Context) {
 	data, errBase := base64.RawStdEncoding.DecodeString(strings.Split(req.File, "base64,")[1])
 	if errBase != nil {
 		fmt.Println(errBase)
-		c.JSON(http.StatusBadRequest, Response{Res: "file is not valid1"})
-		return
-	}
-
-	file, errfile := c.FormFile(bytes.NewBuffer(data).String())
-	if errfile != nil {
-		fmt.Println(errfile)
 		c.JSON(http.StatusBadRequest, Response{Res: "file is not valid2"})
 		return
 	}
-
-	if err := c.SaveUploadedFile((file), "images/"+req.No); err != nil {
+	if err := os.WriteFile("./images/"+req.No, data, 0755); err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, Response{Res: "file is not valid3"})
 		return
 	}
-
-	// global.MaxImageNumber++
 	c.JSON(http.StatusOK, Response{Res: "success"})
 
 }
@@ -66,13 +56,55 @@ func ReadImage(c *gin.Context) {
 		return
 	}
 
-	c.File("images/" + reqURI.ImageId)
+	c.File("./images/" + reqURI.ImageId)
 }
 
 func DeleteImage(c *gin.Context) {
+	reqURI := RequestURI{}
+	if err := c.ShouldBindUri(&reqURI); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusBadRequest, Response{Res: "resquest is not valid"})
+		return
+	}
+	if err := os.Remove("./images/" + reqURI.ImageId); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusBadRequest, Response{Res: "there is no file. file name : " + reqURI.ImageId})
+		return
+
+	}
+	c.JSON(http.StatusOK, Response{Res: "success"})
 
 }
 
 func UpdateImage(c *gin.Context) {
+	req := RequestFile{}
+	reqURI := RequestURI{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusBadRequest, Response{Res: "file is not valid1"})
+		return
+	}
+	if err := c.ShouldBindUri(&reqURI); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusBadRequest, Response{Res: "resquest is not valid"})
+		return
+	}
+	data, errBase := base64.RawStdEncoding.DecodeString(strings.Split(req.File, "base64,")[1])
+	if errBase != nil {
+		fmt.Println(errBase)
+		c.JSON(http.StatusBadRequest, Response{Res: "file is not valid2"})
+		return
+	}
+	if err := os.Remove("./images/" + reqURI.ImageId); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusBadRequest, Response{Res: "there is no file. file name : " + reqURI.ImageId})
+		return
+	}
+	if err := ioutil.WriteFile("./images/"+reqURI.ImageId, data, 0755); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusBadRequest, Response{Res: "file is not valid3"})
+		return
+	}
+	c.JSON(http.StatusOK, Response{Res: "success"})
 
 }
