@@ -32,7 +32,7 @@ func Createimage(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, Response{Res: "binding error"})
 		return
 	}
-	data, errBase := base64.RawStdEncoding.DecodeString(strings.Split(req.File, "base64,")[1]) // :"base64, 부분까지 제거를 한 후 []byte로 변환"
+	data, errBase := base64.StdEncoding.DecodeString(strings.Split(req.File, "base64,")[1]) // :"base64, 부분까지 제거를 한 후 []byte로 변환"
 	if errBase != nil {
 		fmt.Println(errBase)
 		c.JSON(http.StatusBadRequest, Response{Res: "byte conversion error"})
@@ -88,7 +88,7 @@ func UpdateImage(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, Response{Res: "id binding error"})
 		return
 	}
-	data, errBase := base64.RawStdEncoding.DecodeString(strings.Split(req.File, "base64,")[1]) //[]byte로 변환
+	data, errBase := base64.StdEncoding.DecodeString(strings.Split(req.File, "base64,")[1]) //[]byte로 변환
 	if errBase != nil {
 		fmt.Println(errBase)
 		c.JSON(http.StatusBadRequest, Response{Res: "byte conversion error"})
