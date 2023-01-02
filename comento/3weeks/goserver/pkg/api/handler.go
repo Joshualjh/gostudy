@@ -1,6 +1,5 @@
 package api
 
-<<<<<<< HEAD
 import (
 	"main/pkg/model"
 	"net/http"
@@ -8,15 +7,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-=======
-import "github.com/gin-gonic/gin"
->>>>>>> f0db2b31fd49a8f8497f1585cd02ade6e469717b
 
 type Res struct {
 	Res string `json:"res"`
 }
 
-<<<<<<< HEAD
 func (apis *APIs) CreateBoard(c *gin.Context) {
 	req := &model.Board{}
 	if err := c.ShouldBind(req); err != nil {
@@ -64,12 +59,5 @@ func (apis *APIs) UpdateBoard(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, &Res{Res: "not vaild6"})
 	}
 	c.JSON(http.StatusOK, res)
-=======
-func (api *APIs) CreateBoard(c *gin.Context) {
-
-}
-
-func (api *APIs) GetBoradList(c *gin.Context) {
->>>>>>> f0db2b31fd49a8f8497f1585cd02ade6e469717b
 
 }

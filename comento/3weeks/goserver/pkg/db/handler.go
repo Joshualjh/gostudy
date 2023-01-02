@@ -3,7 +3,7 @@ package db
 import (
 	"main/pkg/model"
 
-	"google.golang.org/protobuf/internal/errors"
+	"github.com/pkg/errors"
 )
 
 func (h *DBHandler) CreateBoard(board *model.Board) (*model.Board, error) {
