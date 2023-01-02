@@ -35,6 +35,15 @@ func (apis *APIs) GetBoradList(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+func (apis *APIs) GetBoradListById(c *gin.Context) {
+	id := c.Param("id")
+	res, err := apis.db.GetBoradListById(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, Res{Res: "not vaild7"})
+	}
+	c.JSON(http.StatusOK, res)
+}
+
 func (apis *APIs) DeleteBoard(c *gin.Context) {
 	id := c.Param("id")
 	if err := apis.db.DeleteBoard(id); err != nil {
