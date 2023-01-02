@@ -4,9 +4,14 @@ go 1.19
 
 require (
 	github.com/gin-gonic/gin v1.8.2
+<<<<<<< HEAD
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/mysql v1.4.4
 	gorm.io/gorm v1.24.3
+=======
+	gorm.io/driver/mysql v1.4.4
+	gorm.io/gorm v1.24.2
+>>>>>>> f0db2b31fd49a8f8497f1585cd02ade6e469717b
 )
 
 require (
