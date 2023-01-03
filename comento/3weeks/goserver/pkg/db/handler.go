@@ -18,12 +18,12 @@ func (h *DBHandler) GetBoradList() ([]*model.Board, error) {
 	return boardList, errors.Wrap(result.Error, "db handler error2")
 }
 
-func (h *DBHandler) GetBoradListById(id string) (*model.Board, error) {
-	board := &model.Board{}
-	result := h.gDB.First(board, id)
+// func (h *DBHandler) GetBoradListById(id string) (*model.Board, error) {
+// 	board := &model.Board{}
+// 	result := h.gDB.First(board, id)
 
-	return board, errors.Wrap(result.Error, "db handler error2")
-}
+// 	return board, errors.Wrap(result.Error, "db handler error2")
+// }
 
 func (h *DBHandler) DeleteBoard(id string) error {
 	result := h.gDB.Delete(&model.Board{}, id)

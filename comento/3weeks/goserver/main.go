@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	dbHandler, err := db.NewAndConnectGorm("admin:password@tcp(127.0.0.1:3306)/dev?charset=utf8mb4&parseTime=True&loc=Local")
+	dbHandler, err := db.NewAndConnectGorm("cruduser:sADMIN123@tcp(crudserverset.mysql.database.azure.com)/dev?charset=utf8mb4&parseTime=True&loc=Local&tls=true")
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 	}

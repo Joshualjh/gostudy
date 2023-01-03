@@ -7,5 +7,5 @@ type Board struct {
 	Hobby    string `json:"hobby"`
 	Last     string `json:"last"`
 	Location string `json:"location"`
-	Phone    string `json:"Phone"`
+	Phone    string `json:"phone"`
 }

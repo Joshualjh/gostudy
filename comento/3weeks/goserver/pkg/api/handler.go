@@ -3,7 +3,6 @@ package api
 import (
 	"main/pkg/model"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,6 +21,7 @@ func (apis *APIs) CreateBoard(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &Res{Res: "not vaild1"})
 		return
+
 	}
 
 	c.JSON(http.StatusOK, res)
@@ -35,15 +35,6 @@ func (apis *APIs) GetBoradList(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (apis *APIs) GetBoradListById(c *gin.Context) {
-	id := c.Param("id")
-	res, err := apis.db.GetBoradListById(id)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, Res{Res: "not vaild7"})
-	}
-	c.JSON(http.StatusOK, res)
-}
-
 func (apis *APIs) DeleteBoard(c *gin.Context) {
 	id := c.Param("id")
 	if err := apis.db.DeleteBoard(id); err != nil {
@@ -52,18 +43,12 @@ func (apis *APIs) DeleteBoard(c *gin.Context) {
 }
 
 func (apis *APIs) UpdateBoard(c *gin.Context) {
-	ids := c.Param("id")
 	req := &model.Board{}
-
-	id, err := strconv.ParseUint(ids, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, &Res{Res: "not vaild4"})
-	}
 
 	if err := c.ShouldBind(req); err != nil {
 		c.JSON(http.StatusBadRequest, Res{Res: "not vaild5"})
 	}
-	res, err := apis.db.UpdateBoard(uint(id), req)
+	res, err := apis.db.UpdateBoard(req.ID, req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &Res{Res: "not vaild6"})
 	}
