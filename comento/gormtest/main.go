@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -27,7 +28,8 @@ func main() {
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 	}
-	fmt.Println(dbHandler)
+	a, _ := dbHandler.GetBoradList()
+	fmt.Println(a)
 }
 
 func NewAndConnectGorm(dsn string) (*DBHandler, error) {
@@ -38,4 +40,11 @@ func NewAndConnectGorm(dsn string) (*DBHandler, error) {
 	}
 
 	return dbHandler, err
+}
+
+func (h *DBHandler) GetBoradList() ([]Board, error) {
+	boardList := []Board{}
+	result := h.gDB.Find(&boardList)
+
+	return boardList, errors.Wrap(result.Error, "db handler error2")
 }
